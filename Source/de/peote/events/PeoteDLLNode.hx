@@ -18,5 +18,13 @@ class PeoteDLLNode<T>
 		node = newnode;
 		dll = list;
 	}
-
+	
+	inline public function nextClear():PeoteDLLNode<T>  // GC-optimization ?
+	{
+		node = null;
+		prev = null;
+		dll = null;
+		return next;
+	}
+	
 }

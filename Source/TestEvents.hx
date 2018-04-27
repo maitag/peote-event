@@ -1,7 +1,6 @@
 package;
 
 import haxe.Timer;
-
 import lime.app.Application;
 
 import de.peote.events.PeoteEvent;
@@ -27,6 +26,7 @@ class TestEvents extends Application {
 		b.listenEvent( c, 2 );
 		
 		c.sendEvent(1);
+		
 		c.sendEvent(2);
 		
 		//a.unlistenObj(b);
@@ -45,11 +45,14 @@ class TestEvents extends Application {
 		a.listenEvent(b, 2);
 		a.listenEvent(c, 1);
 		b.listenEvent(c, 1);
+		b.listenEvent(a, 1);
+		c.listenEvent(a, 1);
 		c.listenEvent(b, 1);
 		c.listenEvent(b, 2);
 		
 		a.unlistenObj(b);
 		
+		a.sendEvent(1);
 		b.sendEvent(1);
 		b.sendEvent(2);
 		c.sendEvent(1);
@@ -203,8 +206,8 @@ class WorldObject extends PeoteEvent<Param>
 	}
 
 	override public function removeAllListener() {
-		if (!notrace) super.removeAllListener();
-		trace(name + " removes all events from all object listening to it");
+		if (!notrace) trace(name + " removes all events from all object listening to it");
+		super.removeAllListener();
 	}
 
 }

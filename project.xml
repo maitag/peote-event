@@ -2,8 +2,8 @@
 <project>
 	
 	<meta title="peote-events" package="de.peote.events" version="0.1.0" company="Sylvio Sell - maitag" />
-	<!--<app main="TestEvents" path="Export" file="TestEvents" />-->
-	<app main="TestTimeEvents" path="Export" file="TestTimeEvents" />
+	<app main="TestEvents" path="Export" file="TestEvents" />
+	<!--<app main="TestTimeEvents" path="Export" file="TestTimeEvents" />-->
 	
 	<source path="Source" />
 	

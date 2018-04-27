@@ -84,6 +84,7 @@ class PeoteEventDLL<PARAM> extends PeoteDLL<PeoteEventNode<PARAM>>
 		{	
 			obsnode.node.dll.unlink(obsnode.node);
 			obsnode = obsnode.next;
+			//obsnode = obsnode.nextClear(); // GC-optimization
 		}
 		obs.head = null;
 	}

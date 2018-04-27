@@ -50,6 +50,7 @@ class PeoteDLL<T>
 			else node.prev.next = null; // last
 		}
 		return node.next;
+		//return node.nextClear();  // GC-optimization ?
 	}
 
 }

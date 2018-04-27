@@ -121,8 +121,8 @@ class WorldObject extends PeoteTimeEvent<Param>
 	}
 
 	override public function removeAllListener() {
-		if (!notrace) super.removeAllListener();
-		trace(name + " removes all events from all object listening to it");
+		if (!notrace) trace(name + " removes all events from all object listening to it");
+		super.removeAllListener();
 	}
 
 }
