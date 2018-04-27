@@ -11,6 +11,6 @@
 
 	<haxeflag name="-dce" value="full" />
 	
-	<assets path="Assets" rename="assets" />
+	<!--<assets path="Assets" rename="assets" />-->
 	
 </project>

@@ -1,10 +1,8 @@
 package;
 
 import de.peote.events.PeoteTimeslicer;
-import haxe.Timer;
 
 import lime.app.Application;
-import lime.graphics.Renderer;
 
 import de.peote.events.PeoteTimeEvent;
 
@@ -32,8 +30,8 @@ class TestTimeEvents extends Application {
 		a.listenEvent( c, 2 );
 		b.listenEvent( c, 2 );
 		
-		c.sendTimeEvent(1);
-		c.sendTimeEvent(2);
+		c.sendTimeEvent(1, { msg:"imediadly"} );
+		c.sendTimeEvent(2, { msg:"imediadly"} );
 		
 		//a.unlistenObj(b);
 		//a.unlistenAll();
@@ -41,8 +39,8 @@ class TestTimeEvents extends Application {
 		//a.unlistenEvent( c, 1 );
 		c.sendTimeEvent(1, { msg:'someone on channel 1 ?' }, 0.1 );
 		
-		a.unlistenEvent( c, 2 );
-		c.sendTimeEvent(2, { msg:'do u hear me on channel 2 ?' } ,3 );
+		a.unlistenEvent( c, 2 ); // TODO: did not work on neko!
+		c.sendTimeEvent(2, { msg:'do u hear me on channel 2 ?' } , 3 );
 		
 		/*
 		clear(); trace("------------------ TEST 6 -------------------");
@@ -102,12 +100,9 @@ class WorldObject extends PeoteTimeEvent<Param>
 		super.listenEvent( obj, event_nr, callback );
 	}
 	
-	override public function unlistenEvent(obj:PeoteTimeEvent<Param>, event_nr:Int, callback:Int->Param->Void = null) {
+	override public function unlistenEvent(obj:PeoteTimeEvent<Param>, event_nr:Int) {
 		if (!notrace) trace(name + " unlisten to event " + event_nr + " of object "+cast(obj,WorldObject).name);
-		if (callback == null) {
-			callback = this.recieveEvent;
-		}
-		super.unlistenEvent( obj, event_nr, callback );
+		super.unlistenEvent( obj, event_nr );
 	}
 	
 	override public function unlistenObj(obj:PeoteTimeEvent<Param>) {

@@ -5,7 +5,7 @@ package de.peote.events;
  * @author Sylvio Sell
  */
 
-
+@:generic
 class PeoteEventNode<PARAM>
 {
 	public var listen:PeoteDLLNode<PeoteDLLNode<PeoteEventNode<PARAM>>>;

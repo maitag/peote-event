@@ -3,7 +3,6 @@ package;
 import haxe.Timer;
 
 import lime.app.Application;
-import lime.graphics.Renderer;
 
 import de.peote.events.PeoteEvent;
 
@@ -43,13 +42,16 @@ class TestEvents extends Application {
 		
 		clear(); trace("------------------ TEST 2 -------------------");
 		a.listenEvent(b, 1);
+		a.listenEvent(b, 2);
 		a.listenEvent(c, 1);
 		b.listenEvent(c, 1);
 		c.listenEvent(b, 1);
+		c.listenEvent(b, 2);
 		
 		a.unlistenObj(b);
 		
 		b.sendEvent(1);
+		b.sendEvent(2);
 		c.sendEvent(1);
 		
 		
@@ -58,7 +60,8 @@ class TestEvents extends Application {
 		a.listenEvent(b, 1);
 		a.listenEvent(b, 2);
 		c.listenEvent(b, 1);
-		
+		c.listenEvent(b, 2);
+
 		b.removeListener(a);
 		
 		b.sendEvent(1);
@@ -79,7 +82,7 @@ class TestEvents extends Application {
 		b.notrace = true;
 		c.notrace = true;
 		
-		for (i in 0...100000)
+		for (i in 0...10000)
 		{
 			for (j in 0...10)
 			{
@@ -97,7 +100,6 @@ class TestEvents extends Application {
 				a.unlistenEvent( c, j );
 				b.unlistenEvent( c, j );
 			}
-			
 		}
 		trace("time used: " + Math.round((Timer.stamp() - update_time)*1000)/1000);
 	
@@ -111,7 +113,7 @@ class TestEvents extends Application {
 			a.listenEvent( c, j );
 			b.listenEvent( c, j );
 		}
-		for (i in 0...100000)
+		for (i in 0...10000)
 		{
 			
 			for (j in 0...10)
@@ -126,7 +128,7 @@ class TestEvents extends Application {
 			b.unlistenEvent( c, j );
 		}
 		trace("time used: " + Math.round((Timer.stamp() - update_time)*1000)/1000);
-
+		
 	}
 	
 	public function clear():Void 
@@ -180,12 +182,9 @@ class WorldObject extends PeoteEvent<Param>
 		super.listenEvent( obj, event_nr, callback );
 	}
 	
-	override public function unlistenEvent(obj:PeoteEvent<Param>, event_nr:Int, callback:Int->Param->Void = null) {
+	override public function unlistenEvent(obj:PeoteEvent<Param>, event_nr:Int) {
 		if (!notrace) trace(name + " unlisten to event " + event_nr + " of object "+cast(obj,WorldObject).name);
-		if (callback == null) {
-			callback = this.recieveEvent;
-		}
-		super.unlistenEvent( obj, event_nr, callback );
+		super.unlistenEvent( obj, event_nr );
 	}
 	
 	override public function unlistenObj(obj:PeoteEvent<Param>) {

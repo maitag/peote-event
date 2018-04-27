@@ -4,7 +4,7 @@ package de.peote.events;
  * ...
  * @author Sylvio Sell
  */
-
+@:generic
 class PeoteEventDLL<PARAM> extends PeoteDLL<PeoteEventNode<PARAM>>
 {
 	var node:PeoteDLLNode<PeoteEventNode<PARAM>>;
@@ -40,25 +40,22 @@ class PeoteEventDLL<PARAM> extends PeoteDLL<PeoteEventNode<PARAM>>
 	public inline function listen(obs:PeoteDLL<PeoteDLLNode<PeoteEventNode<PARAM>>>, event_nr:Int, callback:Int->PARAM->Void, checkEventExists=true):Void
 	{
 		// check if event is still listening !!!
-		if (checkEventExists) unlisten(obs, event_nr, callback);  // TODO -> OPTIMIZE!!!!
+		if (checkEventExists) unlisten(obs, event_nr);  // TODO -> OPTIMIZE!!!!
 		var obsNode:PeoteDLLNode<PeoteDLLNode<PeoteEventNode<PARAM>>> = obs.append(append( new PeoteEventNode(null, callback, event_nr) )); 
 		obsNode.node.node.listen = obsNode;		
 	}
 	
-	public inline function unlisten(obs:PeoteDLL<PeoteDLLNode<PeoteEventNode<PARAM>>>, event_nr:Int, callback:Int->PARAM->Void):Void
+	public inline function unlisten(obs:PeoteDLL<PeoteDLLNode<PeoteEventNode<PARAM>>>, event_nr:Int):Void
 	{
 		node = head;
 		while (node != null)
 		{	
-			if (node.node.callback == callback) // TODO: order!
+			if (node.node.listen.dll == obs)
 			{
-				if (node.node.listen.dll == obs)
-				{
-					if (node.node.event_nr == event_nr)
-					{	obs.unlink(node.node.listen);
-						node = unlink(node);
-					}
-					else node = node.next;
+				if (node.node.event_nr == event_nr)
+				{	
+					obs.unlink(node.node.listen);
+					node = unlink(node);
 				}
 				else node = node.next;
 			}

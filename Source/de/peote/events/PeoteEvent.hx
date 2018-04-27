@@ -15,8 +15,8 @@ class PeoteEvent<PARAM>
 	
 	public function new()
 	{
-		observed_by = new ObservedBy();
-		observe      = new Observe();
+		observed_by = new ObservedBy<PARAM>();
+		observe     = new Observe<PARAM>();
 	}
 	
 	public function sendEvent(event_nr:Int, send_params:PARAM = null) {
@@ -27,8 +27,8 @@ class PeoteEvent<PARAM>
 		obj.observed_by.listen(observe, event_nr, callback);
 	}
 	
-	public function unlistenEvent(obj:PeoteEvent<PARAM>, event_nr:Int, callback:Int->PARAM->Void = null) {
-		obj.observed_by.unlisten(observe, event_nr, callback);
+	public function unlistenEvent(obj:PeoteEvent<PARAM>, event_nr:Int) {
+		obj.observed_by.unlisten(observe, event_nr);
 	}
 	
 	public function unlistenObj(obj:PeoteEvent<PARAM>) {

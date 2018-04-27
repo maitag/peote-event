@@ -69,7 +69,7 @@ class PeoteTimeslicer<PARAM>
 
 }
 
-
+@:generic
 class NextEvent<PARAM>
 {
 	public var observed_by:PeoteEventDLL<PARAM>;
