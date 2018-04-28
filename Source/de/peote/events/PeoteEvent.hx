@@ -8,6 +8,7 @@ package de.peote.events;
 typedef ObservedBy<PARAM> = PeoteEventDLL<PARAM>;
 typedef Observe<PARAM> = PeoteDLL<PeoteDLLNode<PeoteEventNode<PARAM>>>;
 
+
 class PeoteEvent<PARAM>
 {
 	public var observed_by:ObservedBy<PARAM>;
@@ -19,8 +20,8 @@ class PeoteEvent<PARAM>
 		observe     = new Observe<PARAM>();
 	}
 	
-	public function sendEvent(event_nr:Int, send_params:PARAM = null) {
-		observed_by.send(event_nr, send_params);
+	public function sendEvent(event_nr:Int, params:PARAM = null) {
+		observed_by.send(event_nr, params);
 	}
 	
 	public function listenEvent(obj:PeoteEvent<PARAM>, event_nr:Int , callback:Int->PARAM->Void = null) {

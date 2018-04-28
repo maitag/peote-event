@@ -27,20 +27,22 @@ class TestTimeEvents extends Application {
 		clear(); trace("------------------ TEST 1 -------------------");
 		
 		a.listenEvent( c, 1 );
-		a.listenEvent( c, 2 );
+		a.listenEvent( c, 3 );
 		b.listenEvent( c, 2 );
-		
-		c.sendTimeEvent(1, { msg:"imediadly"} );
-		c.sendTimeEvent(2, { msg:"imediadly"} );
+		b.listenEvent( c, 3 , function(e:Int, p:Param) { b.sendEvent(1, new Param("roger")); } );
+		c.listenEvent( b, 1);
+
+		c.sendTimeEvent(1, new Param("imediadly") );
+		c.sendTimeEvent(2, new Param("imediadly") );
 		
 		//a.unlistenObj(b);
 		//a.unlistenAll();
 		
 		//a.unlistenEvent( c, 1 );
-		c.sendTimeEvent(1, { msg:'someone on channel 1 ?' }, 0.1 );
+		c.sendTimeEvent(1, new Param("someone on channel 1 ?"), 0.1 );
 		
 		a.unlistenEvent( c, 2 ); // TODO: did not work on neko!
-		c.sendTimeEvent(2, { msg:'do u hear me on channel 2 ?' } , 3 );
+		c.sendTimeEvent(3, new Param("do u hear me on channel 3 ?") , 3.5 );
 		
 		/*
 		clear(); trace("------------------ TEST 6 -------------------");
@@ -72,7 +74,7 @@ class WorldObject extends PeoteTimeEvent<Param>
 
 	public function recieveEvent(event_nr:Int, params:Param ):Void 
 	{
-		if (!notrace) trace(".... "+name+" recieves event "+event_nr+' ->  "'+((params!=null) ? params.msg:'null')+'"');
+		if (!notrace) trace('.... $name recieves event $event_nr' + ((params!=null) ? ' -> "${params.message}"' : ''));
 	}
 	
 	public function clear():Void 
@@ -84,12 +86,9 @@ class WorldObject extends PeoteTimeEvent<Param>
 	// -------------- DEBUG -----------------------------
 	
 
-	override public function sendEvent(event_nr:Int, send_params:Param = null) {
+	override public function sendEvent(event_nr:Int, param:Param = null) {
 		if (!notrace) trace(name + " send event " + event_nr + " to all listeners");
-		if (send_params == null) {
-			send_params = { msg:"event " + event_nr + " from " + name };
-		}
-		super.sendEvent(event_nr, send_params );
+		super.sendEvent(event_nr, param);
 	}
 	
 	override public function listenEvent(obj:PeoteTimeEvent<Param>, event_nr:Int, callback:Int->Param->Void = null) {
@@ -126,9 +125,18 @@ class WorldObject extends PeoteTimeEvent<Param>
 	}
 
 }
-
+/*
 typedef Param =
 {
 	?msg:String,
 	//?more:Int
+}*/
+class Param 
+{
+	public var message:String;
+
+	public function new(message:String) {
+		this.message = message;
+	}
 }
+

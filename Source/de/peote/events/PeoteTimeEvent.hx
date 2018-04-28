@@ -8,11 +8,11 @@ package de.peote.events;
 typedef ObservedBy<PARAM> = PeoteEventDLL<PARAM>;
 typedef Observe<PARAM> = PeoteDLL<PeoteDLLNode<PeoteEventNode<PARAM>>>;
 
+
 class PeoteTimeEvent<PARAM>
 {
 	public var observed_by:ObservedBy<PARAM>;
-	//public var observe:Observe<PARAM>;
-	public var observe:PeoteDLL<PeoteDLLNode<PeoteEventNode<PARAM>>>;
+	public var observe:Observe<PARAM>;
 	
 	public var timeslicer:PeoteTimeslicer<PARAM>;
 	

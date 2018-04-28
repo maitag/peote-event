@@ -33,10 +33,10 @@ class TestEvents extends Application {
 		//a.unlistenAll();
 		
 		a.unlistenEvent( c, 1 );
-		c.sendEvent(1, { msg:'someone on channel 1 ?' } );
+		c.sendEvent(1, new Param('someone on channel 1 ?') );
 		
 		a.unlistenEvent( c, 2 );
-		c.sendEvent(2, { msg:'do u hear me on channel 2 ?' } );
+		c.sendEvent(2, new Param('do u hear me on channel 2 ?') );
 		
 		
 		
@@ -75,7 +75,7 @@ class TestEvents extends Application {
 		clear(); trace("------------------ TEST 4 -------------------");
 		a.listenEvent(b, 1);
 		a.listenEvent(b, 1);
-		b.sendEvent(1, { msg: 'stupid if events arrives twice' } );
+		b.sendEvent(1, new Param('stupid if events arrives twice' ));
 		
 		
 		clear(); trace("------------------ TEST 5 -------------------");
@@ -157,7 +157,7 @@ class WorldObject extends PeoteEvent<Param>
 
 	public function recieveEvent(event_nr:Int, params:Param ):Void 
 	{
-		if (!notrace) trace(".... "+name+" recieves event "+event_nr+' ->  "'+params.msg+'"');
+		if (!notrace) trace('.... $name recieves event $event_nr' + ((params!=null) ? ' -> "${params.message}"' : ''));
 	}
 	
 	public function clear():Void 
@@ -169,12 +169,9 @@ class WorldObject extends PeoteEvent<Param>
 	// -------------- DEBUG -----------------------------
 	
 
-	override public function sendEvent(event_nr:Int, send_params:Param = null) {
+	override public function sendEvent(event_nr:Int, param:Param = null) {
 		if (!notrace) trace(name + " send event " + event_nr + " to all listeners");
-		if (send_params == null) {
-			send_params = { msg:"event " + event_nr + " from " + name };
-		}
-		super.sendEvent(event_nr, send_params );
+		super.sendEvent(event_nr, param);
 	}
 	
 	override public function listenEvent(obj:PeoteEvent<Param>, event_nr:Int, callback:Int->Param->Void = null) {
@@ -211,9 +208,17 @@ class WorldObject extends PeoteEvent<Param>
 	}
 
 }
-
+/*
 typedef Param =
 {
 	?msg:String,
 	//?more:Int
+}*/
+class Param 
+{
+	public var message:String;
+
+	public function new(message:String) {
+		this.message = message;
+	}
 }
