@@ -114,8 +114,8 @@ b.sendEvent ( 1, "message from b", 3.5 ); // in 3.5 seconds b will send an event
 in this case the `recieveEvent` function of object `a` is called by the timeslicer `3.5` seconds later.  
 
 
-#Todo
+# Todo
 
 - function to reset the timeslicer
 - more samples and docs
-- optimization
+- different optimization-methods and more performance tests
