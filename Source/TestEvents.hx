@@ -21,61 +21,61 @@ class TestEvents extends Application {
 		
 		clear(); trace("------------------ TEST 1 -------------------");
 		
-		a.listenEvent( c, 1 );
-		a.listenEvent( c, 2 );
-		b.listenEvent( c, 2 );
+		a.listen( c, 1 );
+		a.listen( c, 2 );
+		b.listen( c, 2 );
 		
-		c.sendEvent(1);
+		c.send(1);
 		
-		c.sendEvent(2);
+		c.send(2);
 		
 		//a.unlistenObj(b);
 		//a.unlistenAll();
 		
-		a.unlistenEvent( c, 1 );
-		c.sendEvent(1, new Param('someone on channel 1 ?') );
+		a.unlisten( c, 1 );
+		c.send(1, new Param('someone on channel 1 ?') );
 		
-		a.unlistenEvent( c, 2 );
-		c.sendEvent(2, new Param('do u hear me on channel 2 ?') );
+		a.unlisten( c, 2 );
+		c.send(2, new Param('do u hear me on channel 2 ?') );
 		
 		
 		
 		clear(); trace("------------------ TEST 2 -------------------");
-		a.listenEvent(b, 1);
-		a.listenEvent(b, 2);
-		a.listenEvent(c, 1);
-		b.listenEvent(c, 1);
-		b.listenEvent(a, 1);
-		c.listenEvent(a, 1);
-		c.listenEvent(b, 1);
-		c.listenEvent(b, 2);
+		a.listen(b, 1);
+		a.listen(b, 2);
+		a.listen(c, 1);
+		b.listen(c, 1);
+		b.listen(a, 1);
+		c.listen(a, 1);
+		c.listen(b, 1);
+		c.listen(b, 2);
 		
-		a.unlistenObj(b);
+		a.unlistenFrom(b);
 		
-		a.sendEvent(1);
-		b.sendEvent(1);
-		b.sendEvent(2);
-		c.sendEvent(1);
+		a.send(1);
+		b.send(1);
+		b.send(2);
+		c.send(1);
 		
 		
 		
 		clear(); trace("------------------ TEST 3 -------------------");
-		a.listenEvent(b, 1);
-		a.listenEvent(b, 2);
-		c.listenEvent(b, 1);
-		c.listenEvent(b, 2);
+		a.listen(b, 1);
+		a.listen(b, 2);
+		c.listen(b, 1);
+		c.listen(b, 2);
 
 		b.removeListener(a);
 		
-		b.sendEvent(1);
-		b.sendEvent(2);
+		b.send(1);
+		b.send(2);
 		
 		
 		
 		clear(); trace("------------------ TEST 4 -------------------");
-		a.listenEvent(b, 1);
-		a.listenEvent(b, 1);
-		b.sendEvent(1, new Param('stupid if events arrives twice' ));
+		a.listen(b, 1);
+		a.listen(b, 1);
+		b.send(1, new Param('stupid if events arrives twice' ));
 		
 		
 		clear(); trace("------------------ TEST 5 -------------------");
@@ -89,19 +89,19 @@ class TestEvents extends Application {
 		{
 			for (j in 0...10)
 			{
-				a.listenEvent( c, j );
-				b.listenEvent( c, j );
+				a.listen( c, j );
+				b.listen( c, j );
 			}
 			
 			for (j in 0...10)
 			{
-				c.sendEvent( j );
+				c.send( j );
 			}
 			
 			for (j in 0...10)
 			{
-				a.unlistenEvent( c, j );
-				b.unlistenEvent( c, j );
+				a.unlisten( c, j );
+				b.unlisten( c, j );
 			}
 		}
 		trace("time used: " + Math.round((Timer.stamp() - update_time)*1000)/1000);
@@ -113,22 +113,22 @@ class TestEvents extends Application {
 		
 		for (j in 0...10)
 		{
-			a.listenEvent( c, j );
-			b.listenEvent( c, j );
+			a.listen( c, j );
+			b.listen( c, j );
 		}
 		for (i in 0...10000)
 		{
 			
 			for (j in 0...10)
 			{
-				c.sendEvent( j );
+				c.send( j );
 			}
 			
 		}
 		for (j in 0...10)
 		{
-			a.unlistenEvent( c, j );
-			b.unlistenEvent( c, j );
+			a.unlisten( c, j );
+			b.unlisten( c, j );
 		}
 		trace("time used: " + Math.round((Timer.stamp() - update_time)*1000)/1000);
 		
@@ -169,41 +169,41 @@ class WorldObject extends PeoteEvent<Param>
 	// -------------- DEBUG -----------------------------
 	
 
-	override public function sendEvent(event_nr:Int, param:Param = null) {
-		if (!notrace) trace(name + " send event " + event_nr + " to all listeners");
-		super.sendEvent(event_nr, param);
+	public function send(event:Int, param:Param = null) {
+		if (!notrace) trace('$name sends event $event to all listeners');
+		super.sendEvent(event, param);
 	}
 	
-	override public function listenEvent(obj:PeoteEvent<Param>, event_nr:Int, callback:Int->Param->Void = null) {
-		if (!notrace) trace(name + " listen to event " + event_nr + " of object " + cast(obj, WorldObject).name);
+	public function listen(sender:PeoteEvent<Param>, event:Int, callback:Int->Param->Void = null) {
+		if (!notrace) trace('$name is listen to event $event of object ${cast(sender, WorldObject).name}');
 		if (callback == null) {
 			callback = this.recieveEvent;
 		}
-		super.listenEvent( obj, event_nr, callback );
+		super.listenEvent( sender, event, callback );
 	}
 	
-	override public function unlistenEvent(obj:PeoteEvent<Param>, event_nr:Int) {
-		if (!notrace) trace(name + " unlisten to event " + event_nr + " of object "+cast(obj,WorldObject).name);
-		super.unlistenEvent( obj, event_nr );
+	public function unlisten(sender:PeoteEvent<Param>, event:Int) {
+		if (!notrace) trace('$name stops listening to event $event of object ${cast(sender,WorldObject).name}');
+		super.unlistenEvent( sender, event );
 	}
 	
-	override public function unlistenObj(obj:PeoteEvent<Param>) {
-		if (!notrace) trace(name + " unlisten all events of object "+cast(obj,WorldObject).name);
-		super.unlistenObj(obj);
+	override public function unlistenFrom(sender:PeoteEvent<Param>) {
+		if (!notrace) trace('$name stops listening to all events of object ${cast(sender,WorldObject).name}');
+		super.unlistenFrom(sender);
 	}
 	
 	override public function unlistenAll() {
-		if (!notrace) trace(name + " unlisten all events of all objects");
+		if (!notrace) trace('$name stops listening to all events of all objects');
 		super.unlistenAll();
 	}
 
-	override public function removeListener(obj:PeoteEvent<Param>) {
-		if (!notrace) trace(name + " removes all events that object="+cast(obj,WorldObject).name+" is listening to it");
-		super.removeListener(obj);
+	override public function removeListener(listener:PeoteEvent<Param>) {
+		if (!notrace) trace('$name removes all events that object ${cast(listener,WorldObject).name} is listening to it');
+		super.removeListener(listener);
 	}
 
 	override public function removeAllListener() {
-		if (!notrace) trace(name + " removes all events from all object listening to it");
+		if (!notrace) trace('$name removes all events from all object that is listening to it');
 		super.removeAllListener();
 	}
 

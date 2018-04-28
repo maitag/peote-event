@@ -11,21 +11,21 @@ class PeoteTimeslicer<PARAM>
 {
 	var size:Int;
 	var stepsPerSecond:Int;
+	var maxSeconds:Float;
 	var slot:Int = 0;
 	var timer:Timer;
 	
-	//var commandTable:Vector<Vector<NextEvent<PARAM>>>;
 	var commandTable:Vector<Array<NextEvent<PARAM>>>;
 	
-	public function new(maxSeconds:Int = 10, stepsPerSecond:Int = 10) 
+	public function new(maxSeconds:Int = 60, stepsPerSecond:Int = 10) 
 	{
 		this.size = maxSeconds * stepsPerSecond + 1;
 		this.stepsPerSecond = stepsPerSecond;
-		//commandTable = new Vector<Vector<NextEvent<PARAM>>>(500);
+		this.maxSeconds = maxSeconds;
+
 		commandTable = new Vector<Array<NextEvent<PARAM>>>(size);
 		for (i in 0...size)
 		{	
-			//commandTable[i] = new Vector<NextEvent<PARAM>>(1000); // TODO:1000
 			commandTable[i] = new Array<NextEvent<PARAM>>();
 		}
 		
@@ -45,7 +45,8 @@ class PeoteTimeslicer<PARAM>
 
 	public inline function push(delay:Float, observed_by:PeoteEventDLL<PARAM>, event_nr:Int, params:PARAM ):Void 
 	{	
-		trace('push command '+ ( (slot+Math.round(Math.min(size-1, delay * stepsPerSecond)))%size ));
+		//trace('push command '+ ( (slot+Math.round(Math.min(size-1, delay * stepsPerSecond)))%size ));
+		if (delay > maxSeconds) throw('Error, PeoteTimeslicer can only store events with a maximum delay of $maxSeconds seconds');
 		commandTable[(slot+Math.round(Math.min(size-1, delay * stepsPerSecond)))%size].push(new NextEvent<PARAM>(observed_by, event_nr, params));
 	}
 	
@@ -56,7 +57,7 @@ class PeoteTimeslicer<PARAM>
 		var last_slot:Int = slot;
 		slot = (slot + 1) % size;
 		
-		// again
+		// to take care that no one get lost in last timestep ;)
 		while (commandTable[last_slot].length > 0) step();
 	}	
 	

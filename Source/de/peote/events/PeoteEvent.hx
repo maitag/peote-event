@@ -11,8 +11,8 @@ typedef Observe<PARAM> = PeoteDLL<PeoteDLLNode<PeoteEventNode<PARAM>>>;
 
 class PeoteEvent<PARAM>
 {
-	public var observed_by:ObservedBy<PARAM>;
-	public var observe:Observe<PARAM>;
+	var observed_by:ObservedBy<PARAM>;
+	var observe:Observe<PARAM>;
 	
 	public function new()
 	{
@@ -20,28 +20,28 @@ class PeoteEvent<PARAM>
 		observe     = new Observe<PARAM>();
 	}
 	
-	public function sendEvent(event_nr:Int, params:PARAM = null) {
-		observed_by.send(event_nr, params);
+	public function sendEvent(event:Int, params:PARAM = null) {
+		observed_by.send(event, params);
 	}
 	
-	public function listenEvent(obj:PeoteEvent<PARAM>, event_nr:Int , callback:Int->PARAM->Void = null) {
-		obj.observed_by.listen(observe, event_nr, callback);
+	public function listenEvent(sender:PeoteEvent<PARAM>, event:Int, callback:Int->PARAM->Void) {
+		sender.observed_by.listen(observe, event, callback);
 	}
 	
-	public function unlistenEvent(obj:PeoteEvent<PARAM>, event_nr:Int) {
-		obj.observed_by.unlisten(observe, event_nr);
+	public function unlistenEvent(sender:PeoteEvent<PARAM>, event:Int) {
+		sender.observed_by.unlisten(observe, event);
 	}
 	
-	public function unlistenObj(obj:PeoteEvent<PARAM>) {
-		obj.observed_by.unlistenObj(observe);
+	public function unlistenFrom(sender:PeoteEvent<PARAM>) {
+		sender.observed_by.unlistenObj(observe);
 	}
 	
 	public function unlistenAll() {
 		observed_by.unlistenAll(observe);
 	}
 
-	public function removeListener(obj:PeoteEvent<PARAM>) {
-		observed_by.unlistenObj(obj.observe);
+	public function removeListener(listener:PeoteEvent<PARAM>) {
+		observed_by.unlistenObj(listener.observe);
 	}
 
 	public function removeAllListener() {

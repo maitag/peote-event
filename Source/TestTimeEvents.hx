@@ -16,7 +16,7 @@ class TestTimeEvents extends Application {
 		
 		super ();
 		
-		var timeslicer:PeoteTimeslicer<Param> = new PeoteTimeslicer<Param>(3,10);
+		var timeslicer:PeoteTimeslicer<Param> = new PeoteTimeslicer<Param>(60,10);
 		
 		timeslicer.start();
 		
@@ -26,23 +26,26 @@ class TestTimeEvents extends Application {
 		
 		clear(); trace("------------------ TEST 1 -------------------");
 		
-		a.listenEvent( c, 1 );
-		a.listenEvent( c, 3 );
-		b.listenEvent( c, 2 );
-		b.listenEvent( c, 3 , function(e:Int, p:Param) { b.sendEvent(1, new Param("roger")); } );
-		c.listenEvent( b, 1);
+		a.listen( c, 1 );
+		a.listen( c, 3 );
+		b.listen( c, 2 );
+		b.listen( c, 3 , function(e:Int, p:Param) { b.send(1, new Param("roger")); } );
+		c.listen( b, 1);
 
-		c.sendTimeEvent(1, new Param("imediadly") );
-		c.sendTimeEvent(2, new Param("imediadly") );
+		c.send(1, new Param("direct call") );
+		c.sendDelayed(2, new Param("imediadly call via timeslicer") );
 		
 		//a.unlistenObj(b);
 		//a.unlistenAll();
 		
-		//a.unlistenEvent( c, 1 );
-		c.sendTimeEvent(1, new Param("someone on channel 1 ?"), 0.1 );
+		//a.unlisten( c, 1 );
+		c.sendDelayed(1, new Param("someone on channel 1 ?"), 0.1 );
 		
-		a.unlistenEvent( c, 2 ); // TODO: did not work on neko!
-		c.sendTimeEvent(3, new Param("do u hear me on channel 3 ?") , 3.5 );
+		a.unlisten( c, 2 ); // TODO: did not work on neko!
+		c.sendDelayed(3, new Param("do u hear me on channel 3 ?") , 3.5 );
+
+		// throws an error because 61 seconds is greater then maxSeconds in timeslicer
+		// c.sendDelayed(3, new Param("do u hear me on channel 3 ?") , 61 );
 		
 		/*
 		clear(); trace("------------------ TEST 6 -------------------");
@@ -51,7 +54,7 @@ class TestTimeEvents extends Application {
 		*/
 	}
 	
-	public function clear():Void 
+	public function clear():Void
 	{
 		trace("\n\n");
 		a.clear(); b.clear(); c.clear();
@@ -86,41 +89,46 @@ class WorldObject extends PeoteTimeEvent<Param>
 	// -------------- DEBUG -----------------------------
 	
 
-	override public function sendEvent(event_nr:Int, param:Param = null) {
-		if (!notrace) trace(name + " send event " + event_nr + " to all listeners");
-		super.sendEvent(event_nr, param);
+	public function send(event:Int, param:Param = null) {
+		if (!notrace) trace('$name sends event $event to all listeners');
+		super.sendEvent(event, param);
 	}
 	
-	override public function listenEvent(obj:PeoteTimeEvent<Param>, event_nr:Int, callback:Int->Param->Void = null) {
-		if (!notrace) trace(name + " listen to event " + event_nr + " of object " + cast(obj, WorldObject).name);
+	public function sendDelayed(event:Int, param:Param = null, delay:Float=0.0) {
+		if (!notrace) trace('$name sends event $event to all listeners with a delay of $delay seconds');
+		super.sendTimeEvent(event, param, delay);
+	}
+	
+	public function listen(sender:PeoteTimeEvent<Param>, event:Int, callback:Int->Param->Void = null) {
+		if (!notrace) trace('$name is listen to event $event of object ${cast(sender, WorldObject).name}');
 		if (callback == null) {
 			callback = this.recieveEvent;
 		}
-		super.listenEvent( obj, event_nr, callback );
+		super.listenEvent( sender, event, callback );
 	}
 	
-	override public function unlistenEvent(obj:PeoteTimeEvent<Param>, event_nr:Int) {
-		if (!notrace) trace(name + " unlisten to event " + event_nr + " of object "+cast(obj,WorldObject).name);
-		super.unlistenEvent( obj, event_nr );
+	public function unlisten(sender:PeoteTimeEvent<Param>, event:Int) {
+		if (!notrace) trace('$name stops listening to event $event of object ${cast(sender,WorldObject).name}');
+		super.unlistenEvent( sender, event );
 	}
 	
-	override public function unlistenObj(obj:PeoteTimeEvent<Param>) {
-		if (!notrace) trace(name + " unlisten all events of object "+cast(obj,WorldObject).name);
-		super.unlistenObj(obj);
+	override public function unlistenFrom(sender:PeoteTimeEvent<Param>) {
+		if (!notrace) trace('$name stops listening to all events of object ${cast(sender,WorldObject).name}');
+		super.unlistenFrom(sender);
 	}
 	
 	override public function unlistenAll() {
-		if (!notrace) trace(name + " unlisten all events of all objects");
+		if (!notrace) trace('$name stops listening to all events of all objects');
 		super.unlistenAll();
 	}
 
-	override public function removeListener(obj:PeoteTimeEvent<Param>) {
-		if (!notrace) trace(name + " removes all events that object="+cast(obj,WorldObject).name+" is listening to it");
-		super.removeListener(obj);
+	override public function removeListener(listener:PeoteTimeEvent<Param>) {
+		if (!notrace) trace('$name removes all events that object ${cast(listener,WorldObject).name} is listening to it');
+		super.removeListener(listener);
 	}
 
 	override public function removeAllListener() {
-		if (!notrace) trace(name + " removes all events from all object listening to it");
+		if (!notrace) trace('$name removes all events from all object that is listening to it');
 		super.removeAllListener();
 	}
 

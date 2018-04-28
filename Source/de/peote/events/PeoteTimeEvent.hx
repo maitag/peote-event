@@ -11,10 +11,10 @@ typedef Observe<PARAM> = PeoteDLL<PeoteDLLNode<PeoteEventNode<PARAM>>>;
 
 class PeoteTimeEvent<PARAM>
 {
-	public var observed_by:ObservedBy<PARAM>;
-	public var observe:Observe<PARAM>;
+	var observed_by:ObservedBy<PARAM>;
+	var observe:Observe<PARAM>;
 	
-	public var timeslicer:PeoteTimeslicer<PARAM>;
+	var timeslicer:PeoteTimeslicer<PARAM>;
 	
 	public function new(timeslicer:PeoteTimeslicer<PARAM>)
 	{
@@ -23,33 +23,32 @@ class PeoteTimeEvent<PARAM>
 		observe     = new Observe<PARAM>();
 	}
 	
-	public function sendTimeEvent(event_nr:Int, send_params:PARAM = null, delay:Float=0.0) {
-		
-		timeslicer.push(delay, observed_by, event_nr, send_params);
+	public function sendTimeEvent(event:Int, send_params:PARAM = null, delay:Float=0.0) {	
+		timeslicer.push(delay, observed_by, event, send_params);
 	}
 	
-	public function sendEvent(event_nr:Int, send_params:PARAM = null) {
-		observed_by.send(event_nr, send_params);
+	public function sendEvent(event:Int, params:PARAM = null) {
+		observed_by.send(event, params);
 	}
 	
-	public function listenEvent(obj:PeoteTimeEvent<PARAM>, event_nr:Int , callback:Int->PARAM->Void = null) {
-		obj.observed_by.listen(observe, event_nr, callback);
+	public function listenEvent(sender:PeoteTimeEvent<PARAM>, event:Int, callback:Int->PARAM->Void) {
+		sender.observed_by.listen(observe, event, callback);
 	}
 	
-	public function unlistenEvent(obj:PeoteTimeEvent<PARAM>, event_nr:Int) {
-		obj.observed_by.unlisten(observe, event_nr);
+	public function unlistenEvent(sender:PeoteTimeEvent<PARAM>, event:Int) {
+		sender.observed_by.unlisten(observe, event);
 	}
 	
-	public function unlistenObj(obj:PeoteTimeEvent<PARAM>) {
-		obj.observed_by.unlistenObj(observe);
+	public function unlistenFrom(sender:PeoteTimeEvent<PARAM>) {
+		sender.observed_by.unlistenObj(observe);
 	}
 	
 	public function unlistenAll() {
 		observed_by.unlistenAll(observe); // mit observed_by wird nix gemacht, koennte auch statisch sein!!!
 	}
 
-	public function removeListener(obj:PeoteTimeEvent<PARAM>) {
-		observed_by.unlistenObj(obj.observe);
+	public function removeListener(listener:PeoteTimeEvent<PARAM>) {
+		observed_by.unlistenObj(listener.observe);
 	}
 
 	public function removeAllListener() {
