@@ -58,9 +58,9 @@ size of `maxSeconds * stepsPerSecond + 1` to store all events related to a speci
 
 Use the `sendTimeEvent` method together with a running `timeslicer`-object to send the event after a `delay`:
 ```
-b.sendTimeEvent ( 1, "message from b", timeslicer, 3.5 );
+bob.sendTimeEvent ( 1, "message from bobs past", timeslicer, 3.5 );
 ```
-in this case the `recieveEvent` function of object `a` is called by the timeslicer `3.5` seconds later.  
+in this case the `recieveEvent` function of `alice` is called by the timeslicer `3.5` seconds later.  
 
 
 
