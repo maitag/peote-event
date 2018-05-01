@@ -5,8 +5,9 @@ All relations between the objects that handle events are stored in dynamic linke
 
 # How to use
 
-Create a class that extends the PeoteEvent<T> with a specific parametertype T.  
-The callback-function for recieving events must have 2 parameters, the event-number of type `Int` and some data of type `T`.  
+Create a class that extends the PeoteEvent<PARAM> with a specific parametertype PARAM.  
+The callback-function for recieving events must have 2 parameters,  
+the event-number of type `Int` and some data of type `PARAM` (in this case `String`):
 ```
 class GameObject extends PeoteEvent<String>
 {
@@ -17,26 +18,25 @@ class GameObject extends PeoteEvent<String>
 		trace( 'recieves event $event: $param' );
 	}
 }
-
 ```
 
-Instanzes of that type are able to send and recieve numbered events.  
+Instanzes of that type are able to send and recieve events:
 ```
-a = new GameObject();
-b = new GameObject();
-```
-
-Let an object listen to another object for an specific event number
-```
-a.listenEvent( b, 1, a.recieveEvent ); // a ist listening to event 1 send by b
+alice = new GameObject();
+bob   = new GameObject();
 ```
 
-If object `b` is sending an event with that number, all objects that listen to it  
-will call it's recieve-function with the additional string-parameter  
+Let an object listen to another object for an specific event number:
 ```
-b.sendEvent ( 1, "message from b" ); // b is send an event with number 1 and some string-data
+alice.listenEvent( bob, 1, alice.recieveEvent ); // alice ist listening to event 1 from bob
 ```
-in this case the `recieveEvent` function of object `a` is called
+
+If `bob` is sending an event with that number, all objects that listen to it  
+will call it's recieve-function with the additional string-parameter:
+```
+bob.sendEvent ( 1, "message from bob" ); // bob is send an event with number 1 and some string-data
+```
+in this case the `recieveEvent` function of object `alice` is called.
 
 
 
@@ -47,18 +47,18 @@ The `PeoteTimeslicer` class works like a singlethreaded scheduler.
 It queues all `PeoteEvents` and runs the callbacks somwhat later in time.  
   
 The first parameter defines the maximum delay-time in seconds for all time-events.  
-The second parameter defines the precision of the scheduler in steps-per-seconds.  
-  
-Take care of these values, internally it will create a great ringbuffer with a  
-size of `maxSeconds * stepsPerSecond + 1` to store all events related to a specific timestep.  
+The second parameter defines the precision of the scheduler in steps-per-seconds:
 ```
 var timeslicer:PeoteTimeslicer<String> = new PeoteTimeslicer<String>(60, 10);
 timeslicer.start();
 ```
+Take care of these values, internally it will create a great ringbuffer with a  
+size of `maxSeconds * stepsPerSecond + 1` to store all events related to a specific timestep.  
   
-Use the `sendTimeEvent` method together with a running `timeslicer`-object to send the event after a `delay`.  
+
+Use the `sendTimeEvent` method together with a running `timeslicer`-object to send the event after a `delay`:
 ```
-b.sendTimeEvent ( 1, "message from b", timeslicer, 3.5 ); // in 3.5 seconds b will send an event with number 1
+b.sendTimeEvent ( 1, "message from b", timeslicer, 3.5 );
 ```
 in this case the `recieveEvent` function of object `a` is called by the timeslicer `3.5` seconds later.  
 
@@ -69,16 +69,16 @@ in this case the `recieveEvent` function of object `a` is called by the timeslic
 ```
 sendEvent(event:Int, params:PARAM = null)
     sending an (numbered) event to all listeners
-    parameters are optional
+    params are optional
 
-sendTimeEvent(event:Int, params:PARAM = null, timeslicer:PeoteTimeslicer<PARAM>, delay:Float=0.0)
+sendTimeEvent(event:Int, params:PARAM = null, timeslicer:PeoteTimeslicer<PARAM>, delay:Float = 0.0)
     sending an (numbered) event to all listeners after a delay-time
-    parameters and delay are optional
+    params and delay are optional
 
 listenEvent(sender:PeoteEvent<PARAM>, event:Int , callback:Int->PARAM->Void, checkEventExists:Bool = true)
     listen to an specific object for an (numbered) event
     if an event is recieved the callback function is called
-	default parameter checkEventExists=true did unlistening to that event before setting new
+	if checkEventExists is true, old listenings to that event will deleted before setting a new one
 	
 unlistenEvent(sender:PeoteEvent<PARAM>, event:Int)
     stops listening of a specific event from the sender-object
