@@ -40,16 +40,46 @@ in this case the `recieveEvent` function of object `a` is called
 
 
 
+
+# PeoteEvents and the PeoteTimeslicer
+
+The `PeoteTimeslicer` class works like a singlethreaded scheduler.  
+It queues all `PeoteEvents` and runs the callbacks somwhat later in time.  
+  
+The first parameter defines the maximum delay-time in seconds for all time-events.  
+The second parameter defines the precision of the scheduler in steps-per-seconds.  
+  
+Take care of these values, internally it will create a great ringbuffer with a  
+size of `maxSeconds * stepsPerSecond + 1` to store all events related to a specific timestep.  
+```
+var timeslicer:PeoteTimeslicer<String> = new PeoteTimeslicer<String>(60, 10);
+timeslicer.start();
+```
+  
+Use the `sendTimeEvent` method together with a running `timeslicer`-object to send the event after a `delay`.  
+```
+b.sendTimeEvent ( 1, "message from b", timeslicer, 3.5 ); // in 3.5 seconds b will send an event with number 1
+```
+in this case the `recieveEvent` function of object `a` is called by the timeslicer `3.5` seconds later.  
+
+
+
+
 # PeoteEvent API
 ```
 sendEvent(event:Int, params:PARAM = null)
     sending an (numbered) event to all listeners
     parameters are optional
 
-listenEvent(sender:PeoteEvent<PARAM>, event:Int , callback:Int->PARAM->Void)
+sendTimeEvent(event:Int, params:PARAM = null, timeslicer:PeoteTimeslicer<PARAM>, delay:Float=0.0)
+    sending an (numbered) event to all listeners after a delay-time
+    parameters and delay are optional
+
+listenEvent(sender:PeoteEvent<PARAM>, event:Int , callback:Int->PARAM->Void, checkEventExists:Bool = true)
     listen to an specific object for an (numbered) event
     if an event is recieved the callback function is called
-
+	default parameter checkEventExists=true did unlistening to that event before setting new
+	
 unlistenEvent(sender:PeoteEvent<PARAM>, event:Int)
     stops listening of a specific event from the sender-object
 
@@ -68,54 +98,8 @@ removeAllListener()
 
 
 
-# PeoteTimeEvents and the PeoteTimeslicer
-
-The `PeoteTimeslicer` class works like a singlethreaded scheduler.  
-It queues all `PeoteTimeEvents` and runs the callbacks somwhat later in time.  
-  
-The first parameter defines the maximum delay-time in seconds for all time-events.  
-The second parameter defines the precision of the scheduler in steps-per-seconds.  
-  
-Take care of these values, internally it will create a great ringbuffer with a  
-size of `maxSeconds * stepsPerSecond + 1` to store all events related to a specific timestep.  
-```
-var timeslicer:PeoteTimeslicer<String> = new PeoteTimeslicer<String>(60,10);
-timeslicer.start();
-```
-  
-Create a class that extends the PeoteEvent<T> with a specific parametertype T.  
-```
-class GameObject extends PeoteTimeEvent<String>
-{
-	public function new(name:String, timeslicer:PeoteTimeslicer<String>)
-	{
-		super(timeslicer);
-	}
-
-	public function recieveEvent(event:Int, param:String ):Void 
-	{
-		trace('recieves event $event: $param');
-	}
-}
-
-a = new GameObject(timeslicer);
-b = new GameObject(timeslicer);
-
-a.listenEvent( b, 1, a.recieveEvent ); // a ist listening to event 1 send by b
-```
-
-
-If object `b` is sending an event with a specific number  
-all objects that listen to it will recieve the string  
-after a defined time-offset  
-```
-b.sendEvent ( 1, "message from b", 3.5 ); // in 3.5 seconds b will send an event with number 1
-```
-in this case the `recieveEvent` function of object `a` is called by the timeslicer `3.5` seconds later.  
-
-
 # Todo
 
-- function to reset the timeslicer
+- more timeslicer methods
 - more samples and docs
 - different optimization-methods and more performance tests
