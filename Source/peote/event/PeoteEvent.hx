@@ -16,35 +16,73 @@ class PeoteEvent<PARAM>
 		observe     = new PeoteDLL<PeoteDLLNode<PeoteEventNode<PARAM>>>();
 	}
 	
-	public function sendEvent(event:Int, params:PARAM = null) {
+	/**
+		sending an event to all listeners.
+		@param  event  a number that represents an event
+		@param  params object of user defined type that holds the params for the recieve-callback
+	**/
+	public function sendEvent(event:Int, params:PARAM = null):Void {
 		observed_by.send(event, params);
 	}
 	
-	public function sendTimeEvent(event:Int, params:PARAM = null, timeslicer:PeoteTimeslicer<PARAM>, delay:Float=0.0) {	
+	/**
+		sending an event to all listeners after a delay-time.
+		@param  event  a number that represents an event
+		@param  params object of user defined type that holds the params for the recieve-callback
+		@param  timeslicer reference to the time-scheduler
+		@param  delay  time to wait before sending the event to all listeners 
+	**/
+	public function sendTimeEvent(event:Int, params:PARAM = null, timeslicer:PeoteTimeslicer<PARAM>, delay:Float=0.0):Void {	
 		timeslicer.push(delay, observed_by, event, params);
 	}
 	
-	public function listenEvent(sender:PeoteEvent<PARAM>, event:Int, callback:Int->PARAM->Void = null, checkEventExists:Bool = true) {
+	/**
+		listen to an object for an event.
+		@param  sender the object that will send the event
+		@param  event  a number that represents an event
+		@param  callback a function that will recieve this event inclusive parameters
+		@param  checkEventExists if true, old listenings to that event will deleted before setting a new one
+	**/
+	public function listenEvent(sender:PeoteEvent<PARAM>, event:Int, callback:Int->PARAM->Void = null, checkEventExists:Bool = true):Void {
 		sender.observed_by.listen(observe, event, callback, checkEventExists);
 	}
 	
-	public function unlistenEvent(sender:PeoteEvent<PARAM>, event:Int) {
+	/**
+		stops listening of a specific event from the sender-object.
+		@param  sender the object that will send the event
+		@param  event  a number that represents an event
+	**/
+	public function unlistenEvent(sender:PeoteEvent<PARAM>, event:Int):Void {
 		sender.observed_by.unlisten(observe, event);
 	}
 	
-	public function unlistenFrom(sender:PeoteEvent<PARAM>) {
+	/**
+		stops listening of all events from the sender-object.
+		@param  sender the object that will send the event
+	**/
+	public function unlistenFrom(sender:PeoteEvent<PARAM>):Void {
 		sender.observed_by.unlistenObj(observe);
 	}
 	
-	public function unlistenAll() {
+	/**
+		stops listening to all sender-objects.
+	**/
+	public function unlistenAll():Void {
 		observed_by.unlistenAll(observe);
 	}
 
-	public function removeListener(listener:PeoteEvent<PARAM>) {
+	/**
+		removes a specific listener-object.
+		@param  listener  a reciever-object that is listen to this object
+	**/
+	public function removeListener(listener:PeoteEvent<PARAM>):Void {
 		observed_by.unlistenObj(listener.observe);
 	}
 
-	public function removeAllListener() {
+	/**
+		removes all listener-objects.
+	**/
+	public function removeAllListener():Void {
 		observed_by.removeAllListener();
 	}
 
