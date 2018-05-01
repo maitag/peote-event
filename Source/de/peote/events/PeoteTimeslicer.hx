@@ -2,22 +2,25 @@ package de.peote.events;
 
 /**
  * ...
- * @author semmi
+ * @author Sylvio Sell
  */
+
 import haxe.ds.Vector;
 import haxe.Timer;
 
+@:generic
 class PeoteTimeslicer<PARAM>
 {
 	var size:Int;
 	var stepsPerSecond:Int;
 	var maxSeconds:Float;
+	var speedFactor:Float; // TODO: make public an getter/setter to change while running
 	var slot:Int = 0;
 	var timer:Timer;
 	
 	var commandTable:Vector<Array<NextEvent<PARAM>>>;
 	
-	public function new(maxSeconds:Int = 60, stepsPerSecond:Int = 10) 
+	public function new(maxSeconds:Int = 60, stepsPerSecond:Int = 10, speedFactor:Float = 1.0) 
 	{
 		this.size = maxSeconds * stepsPerSecond + 1;
 		this.stepsPerSecond = stepsPerSecond;
@@ -29,7 +32,7 @@ class PeoteTimeslicer<PARAM>
 			commandTable[i] = new Array<NextEvent<PARAM>>();
 		}
 		
-		timer = new Timer(Math.floor(1000/stepsPerSecond));
+		timer = new Timer(Math.floor(speedFactor * 1000/stepsPerSecond));
 		
 	}
 	

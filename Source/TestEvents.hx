@@ -1,5 +1,11 @@
 package;
 
+/**
+ * ...
+ * @author Sylvio Sell
+ */
+
+import de.peote.events.PeoteTimeslicer;
 import haxe.Timer;
 import lime.app.Application;
 
@@ -21,117 +27,139 @@ class TestEvents extends Application {
 		
 		clear(); trace("------------------ TEST 1 -------------------");
 		
-		a.listen( c, 1 );
-		a.listen( c, 2 );
-		b.listen( c, 2 );
+		a.listenEvent( c, 1 );
+		a.listenEvent( c, 2 );
+		b.listenEvent( c, 2 );
 		
-		c.send(1);
+		c.sendEvent(1);
 		
-		c.send(2);
+		c.sendEvent(2);
 		
-		//a.unlistenObj(b);
+		//a.unlistenFrom(b);
 		//a.unlistenAll();
 		
-		a.unlisten( c, 1 );
-		c.send(1, new Param('someone on channel 1 ?') );
+		a.unlistenEvent( c, 1 );
+		c.sendEvent(1, new Param('someone on channel 1 ?') );
 		
-		a.unlisten( c, 2 );
-		c.send(2, new Param('do u hear me on channel 2 ?') );
+		a.unlistenEvent( c, 2 );
+		c.sendEvent(2, new Param('do u hear me on channel 2 ?') );
 		
 		
 		
 		clear(); trace("------------------ TEST 2 -------------------");
-		a.listen(b, 1);
-		a.listen(b, 2);
-		a.listen(c, 1);
-		b.listen(c, 1);
-		b.listen(a, 1);
-		c.listen(a, 1);
-		c.listen(b, 1);
-		c.listen(b, 2);
+		a.listenEvent(b, 1);
+		a.listenEvent(b, 2);
+		a.listenEvent(c, 1);
+		b.listenEvent(c, 1);
+		b.listenEvent(a, 1);
+		c.listenEvent(a, 1);
+		c.listenEvent(b, 1);
+		c.listenEvent(b, 2);
 		
 		a.unlistenFrom(b);
 		
-		a.send(1);
-		b.send(1);
-		b.send(2);
-		c.send(1);
+		a.sendEvent(1);
+		b.sendEvent(1);
+		b.sendEvent(2);
+		c.sendEvent(1);
 		
 		
 		
 		clear(); trace("------------------ TEST 3 -------------------");
-		a.listen(b, 1);
-		a.listen(b, 2);
-		c.listen(b, 1);
-		c.listen(b, 2);
+		a.listenEvent(b, 1);
+		a.listenEvent(b, 2);
+		c.listenEvent(b, 1);
+		c.listenEvent(b, 2);
 
 		b.removeListener(a);
 		
-		b.send(1);
-		b.send(2);
+		b.sendEvent(1);
+		b.sendEvent(2);
 		
 		
 		
 		clear(); trace("------------------ TEST 4 -------------------");
-		a.listen(b, 1);
-		a.listen(b, 1);
-		b.send(1, new Param('stupid if events arrives twice' ));
+		a.listenEvent(b, 1);
+		a.listenEvent(b, 1);
+		b.sendEvent(1, new Param('stupid if events arrives twice' ));
+		
+		a.listenEvent(b, 1, false);
+		b.sendEvent(1, new Param('oh noo, now it arrives twice' ));
 		
 		
 		clear(); trace("------------------ TEST 5 -------------------");
-		var update_time = Timer.stamp();
+		trace('time for 1 000 000 calls ...');
 		
 		a.notrace = true;
 		b.notrace = true;
 		c.notrace = true;
 		
-		for (i in 0...10000)
+		var update_time:Float;
+		var listen_time:Float = 0.0;
+		var send_time:Float = 0.0;
+		var unlisten_time:Float = 0.0;
+		for (i in 0...100000)
 		{
+			update_time = Timer.stamp();
 			for (j in 0...10)
 			{
-				a.listen( c, j );
-				b.listen( c, j );
+				a.listenEvent( c, j );
+				b.listenEvent( c, j );
 			}
+			listen_time += (Timer.stamp() - update_time);
 			
+			update_time = Timer.stamp();
 			for (j in 0...10)
 			{
-				c.send( j );
+				c.sendEvent( j );
 			}
+			send_time += (Timer.stamp() - update_time);
 			
+			update_time = Timer.stamp();
 			for (j in 0...10)
 			{
-				a.unlisten( c, j );
-				b.unlisten( c, j );
+				a.unlistenEvent( c, j );
+				b.unlistenEvent( c, j );
 			}
+			unlisten_time += (Timer.stamp() - update_time);
 		}
-		trace("time used: " + Math.round((Timer.stamp() - update_time)*1000)/1000);
+		listen_time = Math.round((listen_time) * 1000) / 1000;
+		send_time = Math.round((send_time) * 1000) / 1000;
+		unlisten_time = Math.round((unlisten_time) * 1000) / 1000;
+		trace('"listenEvent"  : ${Math.round((listen_time) * 1000) / 1000} seconds');
+		trace('"sendEvent"    : ${Math.round((send_time) * 1000) / 1000} seconds');
+		trace('"unlistenEvent": ${Math.round((unlisten_time) * 1000) / 1000} seconds');
 	
 		
+		clear(); trace("------- TEST TIME-EVENTS AND TIMESLICER -------------------");
+
+		var timeslicer:PeoteTimeslicer<Param> = new PeoteTimeslicer<Param>(60, 10); // maxSeconds, stepsPerSecond
+		timeslicer.start();
 		
-		clear(); trace("------------------ TEST 6 -------------------");
-		update_time = Timer.stamp();
-		
-		for (j in 0...10)
-		{
-			a.listen( c, j );
-			b.listen( c, j );
-		}
-		for (i in 0...10000)
-		{
+		a = new WorldObject('a');
+		b = new WorldObject('b');
+		c = new WorldObject('c');
 			
-			for (j in 0...10)
-			{
-				c.send( j );
-			}
-			
-		}
-		for (j in 0...10)
-		{
-			a.unlisten( c, j );
-			b.unlisten( c, j );
-		}
-		trace("time used: " + Math.round((Timer.stamp() - update_time)*1000)/1000);
+		a.listenEvent( c, 1 );
+		a.listenEvent( c, 3 );
+		b.listenEvent( c, 2 );
+		b.listenEvent( c, 3 , function(event:Int, params:Param) {
+			trace('.... ${b.name} recieves event $event' + ((params!=null) ? ' -> "${params.message}"' : ''));
+			b.sendEvent(1, new Param("roger")); 
+		});
+		c.listenEvent( b, 1);
+
+		c.sendEvent(1, new Param("direct call") );
+		c.sendTimeEvent( 2, new Param("imediadly call"), timeslicer );
+				
+		//a.unlistenEvent( c, 1 );
+		c.sendTimeEvent( 1, new Param("someone on channel 1 ?"), timeslicer, 0.1 ); // 0.1 seconds
 		
+		a.unlistenEvent( c, 2 );
+		c.sendTimeEvent( 3, new Param("do u hear me on channel 3 ?"), timeslicer , 3.5 ); // 3.5 seconds
+
+		// throws an error because 61 seconds is greater then maxSeconds in timeslicer
+		// c.sendDelayed(3, new Param("do u hear me on channel 3 ?"), timeslicer, 61 );
 	}
 	
 	public function clear():Void 
@@ -155,9 +183,9 @@ class WorldObject extends PeoteEvent<Param>
 		super();
 	}
 
-	public function recieveEvent(event_nr:Int, params:Param ):Void 
+	public function recieveEvent(event:Int, params:Param ):Void 
 	{
-		if (!notrace) trace('.... $name recieves event $event_nr' + ((params!=null) ? ' -> "${params.message}"' : ''));
+		if (!notrace) trace('.... $name recieves event $event' + ((params!=null) ? ' -> "${params.message}"' : ''));
 	}
 	
 	public function clear():Void 
@@ -169,20 +197,25 @@ class WorldObject extends PeoteEvent<Param>
 	// -------------- DEBUG -----------------------------
 	
 
-	public function send(event:Int, param:Param = null) {
+	override public function sendEvent(event:Int, param:Param = null) {
 		if (!notrace) trace('$name sends event $event to all listeners');
 		super.sendEvent(event, param);
 	}
 	
-	public function listen(sender:PeoteEvent<Param>, event:Int, callback:Int->Param->Void = null) {
-		if (!notrace) trace('$name is listen to event $event of object ${cast(sender, WorldObject).name}');
+	override public function sendTimeEvent( event:Int, param:Param = null, timeslicer:PeoteTimeslicer<Param>, delay:Float=0.0) {
+		if (!notrace) trace('$name sends event $event to all listeners with a delay of $delay seconds');
+		super.sendTimeEvent(event, param, timeslicer, delay);
+	}
+	
+	override public function listenEvent(sender:PeoteEvent<Param>, event:Int, callback:Int->Param->Void = null, checkEventExists:Bool=true) {
+		if (!notrace) trace('$name is listen to event $event of object ${cast(sender, WorldObject).name}'+((!checkEventExists)? ' (faster but not removes existing listener $event)':""));
 		if (callback == null) {
 			callback = this.recieveEvent;
 		}
-		super.listenEvent( sender, event, callback );
+		super.listenEvent( sender, event, callback, checkEventExists ); // add false as last parameter to speed up
 	}
 	
-	public function unlisten(sender:PeoteEvent<Param>, event:Int) {
+	override public function unlistenEvent(sender:PeoteEvent<Param>, event:Int) {
 		if (!notrace) trace('$name stops listening to event $event of object ${cast(sender,WorldObject).name}');
 		super.unlistenEvent( sender, event );
 	}

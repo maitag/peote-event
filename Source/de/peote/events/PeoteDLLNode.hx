@@ -5,7 +5,7 @@
  * @author Sylvio Sell
  */
 
-
+@:generic
 class PeoteDLLNode<T>
 {
 	public var node:T;
