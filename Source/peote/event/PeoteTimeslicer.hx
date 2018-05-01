@@ -1,14 +1,13 @@
-package de.peote.events;
+package peote.event;
 
 /**
- * ...
- * @author Sylvio Sell
+ * by Sylvio Sell - rostock 2015
  */
 
 import haxe.ds.Vector;
 import haxe.Timer;
 
-@:generic
+@:generic @:keep
 class PeoteTimeslicer<PARAM>
 {
 	var size:Int;

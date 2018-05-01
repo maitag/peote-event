@@ -1,0 +1,12 @@
+{
+	"name": "peote-event",
+	"url": "https://github.com/maitag/peote-event",
+	"license": "MIT",
+	"tags": ["peote", "event", "scheduler", "timer"],
+	"description": "Pure haxe eventhandling and time-scheduling",
+	"version": "0.2.0",
+	"classPath": "Source/",
+	"releasenote": "",
+	"contributors": ["maitag"],
+	"dependencies": {}
+}

@@ -1,8 +1,7 @@
-﻿package de.peote.events;
+﻿package peote.event;
 
 /**
- * ...
- * @author Sylvio Sell
+ * by Sylvio Sell - rostock 2015
  */
 
 @:generic

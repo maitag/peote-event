@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<meta title="peote-events" package="de.peote.events" version="0.1.0" company="Sylvio Sell - maitag" />
+	<meta title="peote-event" package="peote.event" version="0.2.0" company="Sylvio Sell - maitag" />
 	<app main="TestEvents" path="Export" file="TestEvents" />
-	<!--<app main="TestTimeEvents" path="Export" file="TestTimeEvents" />-->
 	
 	<source path="Source" />
 	

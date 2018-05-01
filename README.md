@@ -1,9 +1,16 @@
 # peote-event
 
-Pure haxe eventhandling and time-scheduling.  
+Pure [Haxe](http://haxe.org) eventhandling and time-scheduling.  
 All relations between the objects that handle events are stored in dynamic linked lists.  
 
-# How to use
+
+## Installation:
+```
+haxelib git peote-event https://github.com/maitag/peote-event
+```
+
+
+## How to use
 
 Create a class that extends the PeoteEvent<PARAM> with a specific parametertype PARAM.  
 The callback-function for recieving events must have 2 parameters,  
@@ -41,7 +48,7 @@ in this case the `recieveEvent` function of object `alice` is called.
 
 
 
-# PeoteEvents and the PeoteTimeslicer
+## PeoteEvents and the PeoteTimeslicer
 
 The `PeoteTimeslicer` class works like a singlethreaded scheduler.  
 It queues all `PeoteEvents` and runs the callbacks somwhat later in time.  
@@ -65,7 +72,7 @@ in this case the `recieveEvent` function of `alice` is called by the timeslicer 
 
 
 
-# PeoteEvent API
+## PeoteEvent API
 ```
 sendEvent(event:Int, params:PARAM = null)
     sending an (numbered) event to all listeners
@@ -98,7 +105,7 @@ removeAllListener()
 
 
 
-# Todo
+## Todo
 
 - more timeslicer methods
 - more samples and docs

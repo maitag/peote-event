@@ -1,15 +1,14 @@
 package;
 
 /**
- * ...
- * @author Sylvio Sell
+ * by Sylvio Sell - rostock 2015
  */
 
-import de.peote.events.PeoteTimeslicer;
 import haxe.Timer;
 import lime.app.Application;
 
-import de.peote.events.PeoteEvent;
+import peote.event.PeoteEvent;
+import peote.event.PeoteTimeslicer;
 
 class TestEvents extends Application {
 	
