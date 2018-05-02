@@ -1,7 +1,7 @@
 # peote-event
 
 Pure [Haxe](http://haxe.org) eventhandling and time-scheduling.  
-All relations between the objects that handle events are stored in dynamic linked lists.  
+All relations between the objects that handle events are stored in linked lists.  
 
 
 ## Installation:
