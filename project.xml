@@ -2,7 +2,9 @@
 <project>
 	
 	<meta title="peote-event" package="peote.event" version="0.2.0" company="Sylvio Sell - maitag" />
+	
 	<app main="TestEvents" path="Export" file="TestEvents" />
+	<!--<app main="TestMacroGen" path="Export" file="TestMacroGen" />-->
 	
 	<source path="Source" />
 	
