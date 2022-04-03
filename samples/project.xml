@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="peote-event" package="peote.event" version="0.3.0" company="Sylvio Sell - maitag" />
+	
+	<app main="TestEvents" path="bin" file="TestEvents" />
+	<!--<app main="TestMacroGen" path="bin" file="TestMacroGen" />-->
+	
+	<source path="src" /> 
+	
+	<haxelib name="lime" />
+	
+	<haxelib name="peote-event" />
+	<!--<source path="../src" /> -->
+
+
+	<haxeflag name="-dce" value="full" />
+	
+</project>
