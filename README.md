@@ -111,7 +111,7 @@ removeAllListener()
 To avoid extending `PeoteEvent<EventParam>` you can also use a build-macro to automatic generate 
 the expected event-methods to make your own class-types event-ready.  
 ```
-@:build( peote.event.PeoteEventMacro.build() )                                                   
+@:build( peote.event.PeoteEventMacro.build() )
 class EventObject {...}
 ```
 so into this case all `EventObject`-instances can listen and send events each other of same type.
@@ -120,7 +120,7 @@ The event-param-type then is the reference of an `EventObject` (e.g. into most c
 Another usecase would be to have a custom event-param-type and also some optional "postfix" for all
 generated methods like this:  
 ```
-@:build( peote.event.PeoteEventMacro.build( {param:Param, postfix:"Super"} ))                                                   
+@:build( peote.event.PeoteEventMacro.build( {param:Param, postfix:"Super"} ))
 class EventObject {...}
 ```  
 So instead of `listenEvent(...)` it will generated as `listenEventSuper(...)` and expect a callback
@@ -131,9 +131,9 @@ to defined other ones with a unique "postfix" for all type-listen/send-specific 
 ```
 @:build( peote.event.PeoteEventMacro.build(
 	{listen:A, param:A}, // generates "listenEvent()" and so on (can listen to A)
-	{listen:B, param:ParamB, postfix:"FromB"}, // generates "listenEventFromB()" etc. (can also listen to B)
+	{listen:B, param:ParamB, postfix:"FromB"}, // generates "listenEventFromB()" etc.
 	{send:WorldObjectA, param:WorldObjectA}    // generates "sendEvent" (can send only to A)
-))                                                   
+))
 class A {...}
 
 @:build(peote.event.PeoteEventMacro.build(
