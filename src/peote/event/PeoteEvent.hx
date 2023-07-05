@@ -80,6 +80,10 @@ class PeoteEvent<PARAM>
 		}
 		observe.head = null;
 		
+		// ToRememberMe: if this would be inserted directly into PeoteDLL.hx to simple call
+		// "observe.unlistenAll();" from here ...
+		// it could send your haxe-compiler into a generic-endless-loop *lol (^_^)
+		// (TODO: figure this out into a simple try.haxe sample for the devels! ;)
 	}
 
 	/**
