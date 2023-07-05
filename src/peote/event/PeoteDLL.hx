@@ -15,7 +15,7 @@ class PeoteDLL<T>
 		head = null;
 	}
 	
-	inline public function append(newnode:T):PeoteDLLNode<T>
+	public inline function append(newnode:T):PeoteDLLNode<T>
 	{
 		// TODO: optimize here with binary tree linked nodes and insert-sort,
 		//       so sending events could faster find event-nr
@@ -28,7 +28,7 @@ class PeoteDLL<T>
 	}
 	
 
-	inline public function unlink(node:PeoteDLLNode<T>):PeoteDLLNode<T>
+	public inline function unlink(node:PeoteDLLNode<T>):PeoteDLLNode<T>
 	{
 		
 		if (node == head)
@@ -52,5 +52,5 @@ class PeoteDLL<T>
 		return node.next;
 		//return node.nextClear();  // GC-optimization ?
 	}
-
+	
 }

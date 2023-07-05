@@ -1,7 +1,7 @@
 package;
 
 /**
- * by Sylvio Sell - rostock 2015
+ * by Sylvio Sell - rostock 2023
  */
 
 import haxe.Timer;
@@ -10,7 +10,7 @@ import lime.app.Application;
 import peote.event.PeoteEvent;
 import peote.event.PeoteTimeslicer;
 
-class TestEvents extends Application {
+class TestMacroGenSingle extends Application {
 	
 	var a:WorldObject;
 	var b:WorldObject;
@@ -121,7 +121,7 @@ class TestEvents extends Application {
 		
 		
 		clear(); trace("------------------ SPEED-TEST -------------------");
-		trace('time for 100 000 calls ...');
+		trace('time for 3 000 000 calls ...');
 		
 		a.notrace = true;
 		b.notrace = true;
@@ -199,7 +199,8 @@ class Param
 
 // single class by extending PeoteEvent
 
-class WorldObject extends PeoteEvent<Param>
+@:build( peote.event.PeoteEventMacro.build( {param:Param, postfix:"Super"} ))                                                   
+class WorldObject
 {
 	public var name:String;
 	public var notrace:Bool = false;
@@ -207,7 +208,6 @@ class WorldObject extends PeoteEvent<Param>
 	public function new(name:String)
 	{
 		this.name = name;
-		super();
 	}
 
 	public function recieveEvent(event:Int, params:Param ):Void 
@@ -217,54 +217,54 @@ class WorldObject extends PeoteEvent<Param>
 	
 	public function clear():Void 
 	{
-		super.unlistenAll();
-		super.removeAllListener();
+		unlistenAllSuper();
+		removeAllListenerSuper();
 	}
 	// --------------------------------------------------
 	// -------------- DEBUG -----------------------------
 	
 
-	override public function sendEvent(event:Int, param:Param = null) {
+	public function sendEvent(event:Int, param:Param = null) {
 		if (!notrace) trace('$name sends event $event to all listeners');
-		super.sendEvent(event, param);
+		sendEventSuper(event, param);
 	}
 	
-	override public function sendTimeEvent( event:Int, param:Param = null, timeslicer:PeoteTimeslicer<Param>, delay:Float=0.0) {
+	public function sendTimeEvent( event:Int, param:Param = null, timeslicer:PeoteTimeslicer<Param>, delay:Float=0.0) {
 		if (!notrace) trace('$name sends event $event to all listeners with a delay of $delay seconds');
-		super.sendTimeEvent(event, param, timeslicer, delay);
+		sendTimeEventSuper(event, param, timeslicer, delay);
 	}
 	
-	override public function listenEvent(sender:PeoteEvent<Param>, event:Int, callback:Int->Param->Void = null, checkEventExists:Bool=true) {
+	public function listenEvent(sender:WorldObject, event:Int, callback:Int->Param->Void = null, checkEventExists:Bool=true) {
 		if (!notrace) trace('$name is listen to event $event of object ${cast(sender, WorldObject).name}'+((!checkEventExists)? ' (faster but not removes existing listener $event)':""));
 		if (callback == null) {
 			callback = this.recieveEvent;
 		}
-		super.listenEvent( sender, event, callback, checkEventExists ); // add false as last parameter to speed up
+		listenEventSuper( sender, event, callback, checkEventExists ); // add false as last parameter to speed up
 	}
 	
-	override public function unlistenEvent(sender:PeoteEvent<Param>, event:Int) {
+	public function unlistenEvent(sender:WorldObject, event:Int) {
 		if (!notrace) trace('$name stops listening to event $event of object ${cast(sender,WorldObject).name}');
-		super.unlistenEvent( sender, event );
+		unlistenEventSuper( sender, event );
 	}
 	
-	override public function unlistenFrom(sender:PeoteEvent<Param>) {
+	public function unlistenFrom(sender:WorldObject) {
 		if (!notrace) trace('$name stops listening to all events of object ${cast(sender,WorldObject).name}');
-		super.unlistenFrom(sender);
+		unlistenFromSuper(sender);
 	}
 	
-	override public function unlistenAll() {
+	public function unlistenAll() {
 		if (!notrace) trace('$name stops listening to all events of all objects');
-		super.unlistenAll();
+		unlistenAllSuper();
 	}
 
-	override public function removeListener(listener:PeoteEvent<Param>) {
+	public function removeListener(listener:WorldObject) {
 		if (!notrace) trace('$name removes all events that object ${cast(listener,WorldObject).name} is listening to it');
-		super.removeListener(listener);
+		removeListenerSuper(listener);
 	}
 
-	override public function removeAllListener() {
+	public function removeAllListener() {
 		if (!notrace) trace('$name removes all events from all object that is listening to it');
-		super.removeAllListener();
+		removeAllListenerSuper();
 	}
 
 }

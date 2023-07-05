@@ -68,7 +68,18 @@ class PeoteEvent<PARAM>
 		stops listening to all sender-objects.
 	**/
 	public function unlistenAll():Void {
-		observed_by.unlistenAll(observe);
+		// observed_by.unlistenAll(observe);
+		
+		// without need of observed_by (e.g. into macro and for listeners only):
+		var obsnode = observe.head;
+		while (obsnode != null)
+		{	
+			obsnode.node.dll.unlink(obsnode.node);
+			obsnode = obsnode.next;
+			//obsnode = obsnode.nextClear(); // GC-optimization
+		}
+		observe.head = null;
+		
 	}
 
 	/**

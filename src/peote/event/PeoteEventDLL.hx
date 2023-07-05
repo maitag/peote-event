@@ -73,7 +73,7 @@ class PeoteEventDLL<PARAM> extends PeoteDLL<PeoteEventNode<PARAM>>
 		}
 	}
 	
-	public inline function unlistenAll(obs:PeoteDLL<PeoteDLLNode<PeoteEventNode<PARAM>>>):Void
+/*	public inline function unlistenAll(obs:PeoteDLL<PeoteDLLNode<PeoteEventNode<PARAM>>>):Void
 	{
 		obsnode = obs.head;
 		while (obsnode != null)
@@ -84,7 +84,7 @@ class PeoteEventDLL<PARAM> extends PeoteDLL<PeoteEventNode<PARAM>>
 		}
 		obs.head = null;
 	}
-	
+*/	
 	public inline function removeAllListener():Void
 	{	
 		node = head;
