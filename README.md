@@ -105,6 +105,51 @@ removeAllListener()
 
 
 
+
+## Macro helpers
+
+To avoid extending `PeoteEvent<EventParam>` you can also use a build-macro to automatic generate 
+the expected event-methods to make your own class-types event-ready.  
+```
+@:build( peote.event.PeoteEventMacro.build() )                                                   
+class EventObject {...}
+```
+so into this case all `EventObject`-instances can listen and send events each other of same type.
+The event-param-type then is the reference of an `EventObject` (e.g. into most case the "sender" itself).  
+  
+Another usecase would be to have a custom event-param-type and also some optional "postfix" for all
+generated methods like this:  
+```
+@:build( peote.event.PeoteEventMacro.build( {param:Param, postfix:"Super"} ))                                                   
+class EventObject {...}
+```  
+So instead of `listenEvent(...)` it will generated as `listenEventSuper(...)` and expect a callback
+where the param-type is `Param`.  
+  
+More spicy things an be done by generating multiple Event-Types where each of them can recieve/send
+to defined other ones with a unique "postfix" for all type-listen/send-specific types, e.g.:  
+```
+@:build( peote.event.PeoteEventMacro.build(
+	{listen:A, param:A}, // generates "listenEvent()" and so on (can listen to A)
+	{listen:B, param:ParamB, postfix:"FromB"}, // generates "listenEventFromB()" etc. (can also listen to B)
+	{send:WorldObjectA, param:WorldObjectA}    // generates "sendEvent" (can send only to A)
+))                                                   
+class A {...}
+
+@:build(peote.event.PeoteEventMacro.build(
+   {listen:B, param:ParamB}, // generates "listenEvent()" (can listen to B)
+   {send:B, param:ParamB},   // generates "sendEvent()"  (can send to B)
+   {send:A, param:ParamB, postfix:"ToA"}  // generates "sendEventToA()" (can send also to A)
+))
+class WorldObjectB {...}
+```
+  
+  
+Best to figure out how it works for more complex event-type-systems is to take a look at the [samples here](https://github.com/maitag/peote-event/tree/master/samples/src).  
+
+
+
+
 ## Todo
 
 - more timeslicer methods
