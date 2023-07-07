@@ -1,9 +1,5 @@
 package;
 
-/**
- * by Sylvio Sell - rostock 2022
- */
-
 import lime.app.Application;
 
 import peote.event.*;
@@ -68,20 +64,14 @@ class Param
 
 typedef IPeoteEventParam = IPeoteEvent<Param>; // this is need for macro arguments cos of TypeParameter
 
-@:build(peote.event.PeoteEventMacro.build(
-	{listen:IPeoteEventParam, param:Param},
-	{send:IPeoteEventParam, param:Param}
-))
+@:build(peote.event.PeoteEventMacro.build( {type:IPeoteEventParam, param:Param} ))
 class WorldObjectA implements IPeoteEvent<Param>
 {
 	public var name:String;		
 	public function new(name:String) this.name = name;
 }
 
-@:build(peote.event.PeoteEventMacro.build(
-	{listen:IPeoteEventParam, param:Param},
-	{send:IPeoteEventParam, param:Param}
-))
+@:build(peote.event.PeoteEventMacro.build( {type:IPeoteEventParam, param:Param} ))
 class WorldObjectB implements IPeoteEvent<Param>
 {
 	public var name:String;

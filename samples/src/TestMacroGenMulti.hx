@@ -69,7 +69,7 @@ class ParamB
 // building multiple listener for both WorldObject types
 // without param it using same for param as the listen-object itself
 
-@:build( peote.event.PeoteEventMacro.build(
+@:build( peote.event.PeoteEventMacro.buildMulti(
 	{listen:WorldObjectA, param:WorldObjectA},            // listenEvent
 	{listen:WorldObjectB, param:ParamB, postfix:"FromB"}, // listenEventFromB
 	{send:WorldObjectA, param:WorldObjectA}               // sendEvent (only to A)
@@ -82,7 +82,7 @@ class WorldObjectA
 
 // building multiple senders for both WorldObject types
 
-@:build(peote.event.PeoteEventMacro.build(
+@:build(peote.event.PeoteEventMacro.buildMulti(
    {listen:WorldObjectB, param:ParamB}, // listenEvent (only to B)
    {send:WorldObjectB, param:ParamB},   // sendEvent 
    {send:WorldObjectA, param:ParamB, postfix:"ToA"}  // sendEventToA

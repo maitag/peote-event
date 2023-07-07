@@ -3,10 +3,11 @@
 	
 	<meta title="peote-event" package="peote.event" version="0.3.0" company="Sylvio Sell - maitag" />
 	
-	<!--<app main="TestEvents" path="bin" file="TestEvents" />-->
-	<app main="TestMacroGenSingle" path="bin" file="TestMacroGen" />
-	<!--<app main="TestMacroInterface" path="bin" file="TestMacroGen" />-->
-	<!--<app main="TestMacroGenMulti" path="bin" file="TestMacroGen" />-->
+	<app main="TestEvents" path="bin" file="TestEvents" />
+	<!--<app main="TestMacroGenSingle" path="bin" file="TestMacroGenSingle" />-->
+	<!--<app main="TestMacroInterface" path="bin" file="TestMacroInterface" />-->
+	<!--<app main="TestMacroGenMulti" path="bin" file="TestMacroGenMulti" />-->
+	<!--<app main="TestMacroPkg" path="bin" file="TestMacroPkg" />-->
 	
 	<source path="src" /> 
 	

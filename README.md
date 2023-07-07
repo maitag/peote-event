@@ -126,22 +126,36 @@ class EventObject {...}
 So instead of `listenEvent(...)` it will generated as `listenEventSuper(...)` and expect a callback
 where the param-type is `Param`.  
   
-More spicy things an be done by generating multiple Event-Types where each of them can recieve/send
-to defined other ones with a unique "postfix" for all type-listen/send-specific types, e.g.:  
+You can also give a special type for senders and listeners, e.g. to use an Interface over multiple classes:
 ```
-@:build( peote.event.PeoteEventMacro.build(
+// a typedef is need because the macro functionarguments don't accept <TypeParameter>
+typedef IPeoteEventParam = IPeoteEvent<Param>;
+
+@:build( peote.event.PeoteEventMacro.build( {type:IPeoteEventParam, param:Param} ))
+class A implements IPeoteEvent<Param> {...}
+
+@:build( peote.event.PeoteEventMacro.build( {type:IPeoteEventParam, param:Param} ))
+class B implements IPeoteEvent<Param> {...}
+```  
+  
+  
+More spicy things an be done by generating multiple Event-Types where each of them can recieve/send
+to defined other ones with a unique "postfix" for all type-listen/send-specific types.
+For this you have to use `.buildMulti()` with arguments like:  
+```
+@:build( peote.event.PeoteEventMacro.buildMulti(
 	{listen:A, param:A}, // generates "listenEvent()" and so on (can listen to A)
 	{listen:B, param:ParamB, postfix:"FromB"}, // generates "listenEventFromB()" etc.
-	{send:WorldObjectA, param:WorldObjectA}    // generates "sendEvent" (can send only to A)
+	{send:A, param:A} // generates "sendEvent" (can send only to A)
 ))
 class A {...}
 
-@:build(peote.event.PeoteEventMacro.build(
+@:build(peote.event.PeoteEventMacro.buildMulti(
    {listen:B, param:ParamB}, // generates "listenEvent()" (can listen to B)
    {send:B, param:ParamB},   // generates "sendEvent()"  (can send to B)
-   {send:A, param:ParamB, postfix:"ToA"}  // generates "sendEventToA()" (can send also to A)
+   {send:A, param:ParamB, postfix:"ToA"} // generates "sendEventToA()" (can send also to A)
 ))
-class WorldObjectB {...}
+class B {...}
 ```
   
   
@@ -153,5 +167,5 @@ Best to figure out how it works for more complex event-type-systems is to take a
 ## Todo
 
 - more timeslicer methods
-- more samples and docs
-- different optimization-methods and more performance tests
+- more samples, unit and performance tests
+- optimization

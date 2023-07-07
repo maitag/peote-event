@@ -1,9 +1,5 @@
 package;
 
-/**
- * by Sylvio Sell - rostock 2023
- */
-
 import haxe.Timer;
 import lime.app.Application;
 
@@ -199,7 +195,7 @@ class Param
 
 // single class by extending PeoteEvent
 
-@:build( peote.event.PeoteEventMacro.build( {param:Param, postfix:"Super"} ))                                                   
+@:build( peote.event.PeoteEventMacro.build( {param:Param, postfix:"Super"} ))
 class WorldObject
 {
 	public var name:String;
